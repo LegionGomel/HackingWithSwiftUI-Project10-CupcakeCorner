@@ -12,7 +12,7 @@ class Order: ObservableObject, Codable {
         case type, quantity, extraFrosting, addSprinkles, name, streetAddress, city, zip
     }
     
-    static let types = ["Vanilla", "Strawberry", "Chockolate", "Rainbow"]
+    static let types = ["Vanilla", "Strawberry", "Chocolate", "Rainbow"]
     
     @Published var type = 0
     @Published var quantity = 3

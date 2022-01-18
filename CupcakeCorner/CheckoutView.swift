@@ -9,6 +9,10 @@ import SwiftUI
 
 struct CheckoutView: View {
     @ObservedObject var order: Order
+    
+    @State private var confirmationMessage = ""
+    @State private var showingConfirmation = false
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -34,6 +38,11 @@ struct CheckoutView: View {
         }
         .navigationTitle("Check out")
         .navigationBarTitleDisplayMode(.inline)
+        .alert("Thank you!", isPresented: $showingConfirmation) {
+            Button("OK", action: {})
+        } message: {
+            Text(confirmationMessage)
+        }
     }
     // asyncronous function to send order object as a JSON in background
     func placeOrder() async {
@@ -53,7 +62,10 @@ struct CheckoutView: View {
         
         do {
             let (data, _) = try await URLSession.shared.upload(for: request, from: encoded)
-            // handle the result
+            // handle the result and show as confirmationMessage
+            let decodedOrder = try JSONDecoder().decode(Order.self, from: data)
+            confirmationMessage = "Your order for \(decodedOrder.quantity) x \(Order.types[decodedOrder.type].lowercased()) cupcakes is on its way."
+            showingConfirmation = true
         } catch {
             print("Checkout failed")
         }
